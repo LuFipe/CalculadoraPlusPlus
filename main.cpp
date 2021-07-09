@@ -5,10 +5,10 @@
 
 using namespace std;
 
-/*															*/
-/*					TIPOS E ESTRUTURAS						*/
-/*															*/
-enum tipo {OPERANDO, OPERADOR, ABPARENTESE, FEPARENTESE, NADA};
+								/*													*/
+								/*					TIPOS E ESTRUTURAS				*/
+								/*													*/
+enum tipo {OPERANDO, OPERADOR, TRIGONOMETRICO, ABPARENTESE, FEPARENTESE, NADA};
 union atom {double num; char oper;};
 struct mol {atom val;tipo t;};
 	//	typedef mol protein[4] :NÃO FUNCIONA				//
@@ -17,17 +17,20 @@ struct mol {atom val;tipo t;};
 	//	"Coloque-o em um envelope e passe"					//
 struct protein{mol* tRNA;int posicao_O, posicao_I; int fim;};
 
-/*															*/
-/*					 SUB-ROTINAS							*/
-/*															*/
-void R_RNA(string, protein*, int*); 						//Traduz a Expressão (M_RNA - string) para 'Proteinas' (-atomos)
-double Calc(double, char, double); 							//Opera com 2 numeros
-void ReducaoProtein(protein*, char, char, int);				//Reduz a proteina calculando os caracteres adicionados
-void VarreduraCrescente(protein*, char, char, int, int);	//Segue ordem crescente de varredura
-void VarreduraDecrescente(protein*, char, char, int, int);	//Segue ordem decrescente de varredura
-double CalcProteinCresc(protein*, int, int); 				//Calcula toda a Proteina de modo Crescente
-double CalcProteinDecres(protein*, int, int);				//Calcula toda a Proteina de modo Decrescente
-void ShowProtein(protein*); 								//Mostra toda a proteina
+
+								/*													*/
+								/*						PROTOTIPO DE				*/
+								/*						SUB-ROTINAS					*/
+								/*													*/
+void DimAloc(protein*, int);															//Alocação dinamica do tamanho total da proteina
+void R_RNA(string, protein*, int*); 													//Traduz a Expressão (M_RNA - string) para 'Proteinas' (-atomos)
+double Calc(double, char, double); 														//Opera com 2 numeros
+void ReducaoProtein(protein*, char, char, int);											//Reduz a proteina calculando os caracteres adicionados
+void VarreduraCrescente(protein*, char, char, int, int);								//Segue ordem crescente de varredura
+void VarreduraDecrescente(protein*, char, char, int, int);								//Segue ordem decrescente de varredura
+double CalcProteinCresc(protein*, int, int); 											//Calcula toda a Proteina de modo Crescente
+double CalcProteinDecres(protein*, int, int);											//Calcula toda a Proteina de modo Decrescente
+void ShowProtein(protein*); 															//Mostra toda a proteina
 
 
 int main(){
@@ -42,28 +45,29 @@ int main(){
 	cout<<"Entre com a expressão";nl
 	cin>>mRNA;
 	tamanhoM_RNA = 2*mRNA.length();
-	proteina.tRNA = new mol[tamanhoM_RNA];
-	cout<<"Tamanho do mRNA = "<<tamanhoM_RNA/2;nl
-	cout<<"Tamanho da tRNA = "<<sizeof(proteina.tRNA);
+	DimAloc(&proteina, tamanhoM_RNA);													//Aloca proteina
 
-	R_RNA(mRNA, &proteina, &pos);
+	R_RNA(mRNA, &proteina, &pos);														//Traduz Proteina
 	proteina.posicao_O = 0;
 	proteina.posicao_I = proteina.fim;
 
 	cout<<"Tamanho da proteina: "<<proteina.fim;nl
 	nl
 	cout<<"Antes: ";nl
-	cout<<"Expressao: "; ShowProtein(&proteina);cout<<" = ";nl
+	cout<<"Expressao: "; ShowProtein(&proteina);cout<<" = ";nl							//Mostra Proteina
 	cout<<"Variavel = "<<resultado;nl
-	resultado = CalcProteinCresc(&proteina, proteina.posicao_O, proteina.posicao_I);
+	resultado = CalcProteinCresc(&proteina, proteina.posicao_O, proteina.posicao_I);	//Calcula Proteina
 	cout<<"Depois: ";nl
-	cout<<"Expressao: "; ShowProtein(&proteina);cout<<" = ";nl
+	cout<<"Expressao: "; ShowProtein(&proteina);cout<<" = ";nl							//Mostra Resultado final
 	cout<<"Resultado = "<<resultado;nl
-/*
-*/
-	delete [] proteina.tRNA;
+
+	delete[] proteina.tRNA;																//Libera Proteina
 
 	return 0;
+}
+
+void DimAloc(protein* prot, int tamanho){
+	prot->tRNA = new mol[tamanho];
 }
 
 void R_RNA(string m_RNA, protein* prot, int* p){
