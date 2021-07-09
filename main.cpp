@@ -15,7 +15,7 @@ struct mol {atom val;tipo t;};
 	//	Então faça:											//
 	//	"Se não pode passar um elefante por baixo da porta"	//
 	//	"Coloque-o em um envelope e passe"					//
-struct protein{mol tRNA[50];int posicao_O, posicao_I; int fim;};
+struct protein{mol* tRNA;int posicao_O, posicao_I; int fim;};
 
 /*															*/
 /*					 SUB-ROTINAS							*/
@@ -34,12 +34,17 @@ int main(){
 	string mRNA;
 	protein proteina;
 	double resultado = 0;
+	int tamanhoM_RNA;
 
 	char operando;
 	int pos=0;
 
 	cout<<"Entre com a expressão";nl
 	cin>>mRNA;
+	tamanhoM_RNA = 2*mRNA.length();
+	proteina.tRNA = new mol[tamanhoM_RNA];
+	cout<<"Tamanho do mRNA = "<<tamanhoM_RNA/2;nl
+	cout<<"Tamanho da tRNA = "<<sizeof(proteina.tRNA);
 
 	R_RNA(mRNA, &proteina, &pos);
 	proteina.posicao_O = 0;
@@ -56,7 +61,7 @@ int main(){
 	cout<<"Resultado = "<<resultado;nl
 /*
 */
-
+	delete [] proteina.tRNA;
 
 	return 0;
 }
