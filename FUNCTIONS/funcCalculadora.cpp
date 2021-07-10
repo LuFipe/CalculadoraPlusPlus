@@ -1,19 +1,7 @@
 #include "../CLASSES/classeCalculadora.h"
 
-			/*					PPROTOTIPO DAS					*/
 			/*					SUB-ROTINAS						*/
-			/*													*/
-double Calc(double, char, double);
-void ReducaoProtein(Protein*, char, char, int );
-void Varredura(Protein*, int, int);
-double CalcProtein(Protein*, int, int);
-void R_RNA(string, Protein*);
 
-			/*													*/
-			/*					SUB-ROTINAS						*/
-			/*													*/
-
-//Opera com 2 numeros
 double Calc(double term1, char oper, double term2){
 	switch (oper)
 	{
@@ -35,77 +23,81 @@ double Calc(double term1, char oper, double term2){
 	}
 }
 
-//Reduz a proteina calculando os caracteres adicionados
-void ReducaoProtein(Protein* prot, char posit, char negati, int i){
+			/*													*/
+			/*					SUB-ROTINAS						*/
+			/*					DE CLASSE						*/
+			/*													*/
+
+void Protein::ReducaoProtein(char posit, char negati, int i){
 	int pre, pos;
 	double operador_1, operador_2;
-	if(prot->get_Type(i) == OPERADOR){
-		if((prot->get_Oper(i) == posit)||(prot->get_Oper(i) == negati)){
+	if(this->get_Type(i) == OPERADOR){
+		if((this->get_Oper(i) == posit)||(this->get_Oper(i) == negati)){
 			pre=i-1;
 				do
 				{
-					if(prot->get_Type(pre) == OPERANDO){
-						operador_1 = prot->get_Num(pre);
-						prot->set_Type(NADA, pre);
+					if(this->get_Type(pre) == OPERANDO){
+						operador_1 = this->get_Num(pre);
+						this->set_Type(NADA, pre);
 						break;
 					};
-					if(prot->get_Type(pre) == FEPARENTESE){
-						prot->set_posicao_I(pre);
-						prot->set_Type(NADA, pre);
+					if(this->get_Type(pre) == FEPARENTESE){
+						this->set_posicao_I(pre);
+						this->set_Type(NADA, pre);
 						int count=0;
-						for(int j = (prot->get_posicao_I()-1); j >= 0; j--){
-							if(prot->get_Type(j) == FEPARENTESE) count++;
+						for(int j = (this->get_posicao_I()-1); j >= 0; j--){
+							if(this->get_Type(j) == FEPARENTESE) count++;
 
-							else if((prot->get_Type(j) == ABPARENTESE)){
+							else if((this->get_Type(j) == ABPARENTESE)){
 								if(count != 0){
 									count--;
 								}
 								else if(count == 0){
-									prot->set_posicao_O(j);
-									prot->set_Type(NADA, j);
+									this->set_posicao_O(j);
+									this->set_Type(NADA, j);
 									break;
 								}
 							} 
 						}
-						prot->setCresc(false);
-						operador_1 = CalcProtein(prot, prot->get_posicao_O(), prot->get_posicao_I());
+						this->setCresc(false);
+						operador_1 = CalcProtein(this->get_posicao_O(), this->get_posicao_I());
 						break;
 					}
-				} while (prot->get_Type(pre--) != OPERANDO);
+				} while (this->get_Type(pre--) != OPERANDO);
 
 			pos=i+1;
 				do
 				{
-					if(prot->get_Type(pos) == OPERANDO){
-						operador_2 = prot->get_Num(pos);
-						prot->set_Type(NADA, pos);
+					if(this->get_Type(pos) == OPERANDO){
+						operador_2 = this->get_Num(pos);
+						this->set_Type(NADA, pos);
 						break;
 					};
-					if(prot->get_Type(pos) == ABPARENTESE){
-						prot->set_posicao_O(pos);
-						prot->set_Type(NADA, pos);
+					if(this->get_Type(pos) == ABPARENTESE){
+						this->set_posicao_O(pos);
+						this->set_Type(NADA, pos);
 						int count=0;
-						for(int j = (prot->get_posicao_O()+1); j < prot->getFim(); j++){
-							if(prot->get_Type(j) == ABPARENTESE) count++;
+						for(int j = (this->get_posicao_O()+1); j < this->getFim(); j++){
+							if(this->get_Type(j) == ABPARENTESE) count++;
 
-							else if((prot->get_Type(j) == FEPARENTESE)){
+							else if((this->get_Type(j) == FEPARENTESE)){
 								if(count != 0){
 									count--;									
 								}
 								else if(count == 0){
-									prot->set_posicao_I(j);
-									prot->set_Type(NADA, j);
+									this->set_posicao_I(j);
+									this->set_Type(NADA, j);
 									break;
 								}
 							} 
 						}
-						prot->setCresc(true);
-						operador_2 = CalcProtein(prot, prot->get_posicao_O(), prot->get_posicao_I());
+						this->setCresc(true);
+						operador_2 = CalcProtein(this->get_posicao_O(), this->get_posicao_I());
 						break;
 					}					
-				} while (prot->get_Type(pos++) != OPERANDO);
+				} while (this->get_Type(pos++) != OPERANDO);
 
-			prot->set_Type(OPERANDO, i);
+			this->set_Type(OPERANDO, i);
 /*
 			//											//
 			//											//
@@ -118,15 +110,15 @@ void ReducaoProtein(Protein* prot, char posit, char negati, int i){
 			cout<<"________________________________________________________";nl
 			nl
 			nl
-			cout<<"POSIÇÂO:"<<i<<"\nOperadores procurados: \""<<posit<<"\" \""<<negati<<"\"\nOperando 1 = "<< operador_1 <<"\nOperando_2 = "<<operador_2<<"\n\tOPERADOR: \""<<prot->get_Oper(i)<<"\" "<<"\n\tValor numerico: "<<prot->get_Num(i);nl
-			prot->ShowTab();nl
+			cout<<"POSIÇÂO:"<<i<<"\nOperadores procurados: \""<<posit<<"\" \""<<negati<<"\"\nOperando 1 = "<< operador_1 <<"\nOperando_2 = "<<operador_2<<"\n\tOPERADOR: \""<<this->get_Oper(i)<<"\" "<<"\n\tValor numerico: "<<this->get_Num(i);nl
+			this->ShowTab();nl
 */
 
-			prot->set_Num(Calc(operador_1,prot->get_Oper(i),operador_2), i);
+			this->set_Num(Calc(operador_1,this->get_Oper(i),operador_2), i);
 
 /*
-			cout<<"POSIÇÂO:"<<i<<"\nOperando 1 = "<< operador_1 <<"\nOperando_2 = "<<operador_2<<"\n\tOPERADOR: \""<<prot->get_Oper(i)<<"\" "<<"\n\tValor numerico: "<<prot->get_Num(i);nl
-			prot->ShowTab();nl
+			cout<<"POSIÇÂO:"<<i<<"\nOperando 1 = "<< operador_1 <<"\nOperando_2 = "<<operador_2<<"\n\tOPERADOR: \""<<this->get_Oper(i)<<"\" "<<"\n\tValor numerico: "<<this->get_Num(i);nl
+			this->ShowTab();nl
 			nl
 			cout<<"________________________________________________________";nl
 			cout<<"----#-----#-----#-----#-----#-----#-----#-----#-----#---";nl
@@ -139,43 +131,40 @@ void ReducaoProtein(Protein* prot, char posit, char negati, int i){
 
 }
 
-//Varre toda a proteina de forma crescente e decrescente
-void Varredura(Protein* prot, int inicio, int final){
+void Protein::Varredura(int inicio, int final){
 	char oper[3][2] = {{'^','l'},{'*','/'},{'+','-'}};
 
-	if(prot->getCresc() == true){
+	if(this->getCresc() == true){
 		for(int loop = 0; loop < 3; loop++){
 			for(int i = (inicio); i<final; i++){
-				ReducaoProtein(prot, oper[loop][0], oper[loop][1], i);
+				ReducaoProtein(oper[loop][0], oper[loop][1], i);
 			}
 		}
-	}else if(prot->getCresc() == false){
+	}else if(this->getCresc() == false){
 		for(int loop = 0 ; loop<3; loop++){
 			for(int i = (final -1); i>=inicio; i--){
-				ReducaoProtein(prot, oper[loop][0], oper[loop][1], i);
+				ReducaoProtein(oper[loop][0], oper[loop][1], i);
 			}
 		}
 	}
 }
 
-//Calcula toda a Proteina de modo Crescente
-double CalcProtein(Protein* proteina, int inicio, int final){
+double Protein::CalcProtein(int inicio, int final){
 	double res;
-	Varredura(proteina, inicio, final);
+	Varredura(inicio, final);
 
 	for(int i=inicio; i<final; i++){
-		if(proteina->get_Type(i) == OPERANDO){
-			res = proteina->get_Num(i);
-			proteina->set_Type(NADA, i);
+		if(this->get_Type(i) == OPERANDO){
+			res = this->get_Num(i);
+			this->set_Type(NADA, i);
 		}
 	}
 	return res;
 }
 
-//Traduz a Expressão (M_RNA - string) para 'Proteinas' (-atomos)
-void R_RNA(string m_RNA, Protein* prot){
+void Protein::R_RNA(string m_RNA){
 	double numb=0;
-	int expInt=1, expDec=0, fatExpDec=0, posi = prot->get_posicao();
+	int expInt=1, expDec=0, fatExpDec=0, posi = this->get_posicao();
 
 	//Varre toda a espressão mRNA
 	for(int j=0; j<50;j++){
@@ -186,14 +175,14 @@ void R_RNA(string m_RNA, Protein* prot){
 
 											//	Verifica e traduz Parenteses	//
 			if((m_RNA[posi] == '(') || (m_RNA[posi] == ')')){
-				prot->set_Type(((m_RNA[posi] == '(') ? ABPARENTESE:FEPARENTESE), j);
-				prot->set_Oper(m_RNA[posi++], j);
+				this->set_Type(((m_RNA[posi] == '(') ? ABPARENTESE:FEPARENTESE), j);
+				this->set_Oper(m_RNA[posi++], j);
 			}
 
 											//	Verifica e traduz Operadores	//
 			else if((m_RNA[posi]=='+')||(m_RNA[posi]=='-')||(m_RNA[posi]=='*')||(m_RNA[posi]=='/')||(m_RNA[posi]=='^')||(m_RNA[posi]=='l')){
-				prot->set_Type(OPERADOR, j);
-				prot->set_Oper(m_RNA[posi++],j);
+				this->set_Type(OPERADOR, j);
+				this->set_Oper(m_RNA[posi++],j);
 			}
 
 											//	Verifica e traduz Reais			//
@@ -214,28 +203,22 @@ void R_RNA(string m_RNA, Protein* prot){
 						numb = 0;
 						break;
 					};
-					prot->set_Type(OPERANDO, j);
-					prot->set_Num(numb, j);
+					this->set_Type(OPERANDO, j);
+					this->set_Num(numb, j);
 				};
 			}
 											//	Verifica e traduz o sinal '='	//
 			else if(m_RNA[posi]== '='){
-				prot->setFim(j);
-				prot->set_Type(NADA, j);
-				prot->set_Oper(m_RNA[posi],j);
+				this->setFim(j);
+				this->set_Type(NADA, j);
+				this->set_Oper(m_RNA[posi],j);
 			} else cout<<"Expressão invalida\n";
 		};
 		//Para de traduzir a expressao ao encontrar o '='
-		if(prot->get_Oper(j) == '=') break;			//Condição de parada por '='
+		if(this->get_Oper(j) == '=') break;			//Condição de parada por '='
 	};
-	prot->set_posicao(posi);
+	this->set_posicao(posi);
 }
-
-
-			/*													*/
-			/*					SUB-ROTINAS						*/
-			/*					DE CLASSE						*/
-			/*													*/
 
 void Protein::set_M_RNA(string mRNA){
 	this->mRNA = mRNA;
@@ -327,7 +310,7 @@ void Protein::setCresc(bool crescente){
 };
 
 void Protein::set_Resultado(){
-	this->resultado = CalcProtein(this, this->get_posicao_O(), this->get_posicao_I());
+	this->resultado = CalcProtein(this->get_posicao_O(), this->get_posicao_I());
 }
 
 Protein::Protein(string mRNA){
@@ -335,7 +318,7 @@ Protein::Protein(string mRNA){
 	set_DIM(this->get_M_RNA().length());
 	set_posicao(0);
 
-	R_RNA(this->get_M_RNA(), this);
+	R_RNA(this->get_M_RNA());
 	
 	set_posicao_O(0);
 	set_posicao_I(getFim());
