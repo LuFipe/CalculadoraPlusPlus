@@ -107,7 +107,6 @@ void ReducaoProtein(Protein* prot, char posit, char negati, int i){
 
 			prot->set_Type(OPERANDO, i);
 /*
-*/
 			//											//
 			//											//
 			//				DEBUG NA RAÇA				//
@@ -121,8 +120,11 @@ void ReducaoProtein(Protein* prot, char posit, char negati, int i){
 			nl
 			cout<<"POSIÇÂO:"<<i<<"\nOperadores procurados: \""<<posit<<"\" \""<<negati<<"\"\nOperando 1 = "<< operador_1 <<"\nOperando_2 = "<<operador_2<<"\n\tOPERADOR: \""<<prot->get_Oper(i)<<"\" "<<"\n\tValor numerico: "<<prot->get_Num(i);nl
 			prot->ShowTab();nl
+*/
+
 			prot->set_Num(Calc(operador_1,prot->get_Oper(i),operador_2), i);
 
+/*
 			cout<<"POSIÇÂO:"<<i<<"\nOperando 1 = "<< operador_1 <<"\nOperando_2 = "<<operador_2<<"\n\tOPERADOR: \""<<prot->get_Oper(i)<<"\" "<<"\n\tValor numerico: "<<prot->get_Num(i);nl
 			prot->ShowTab();nl
 			nl
@@ -131,7 +133,6 @@ void ReducaoProtein(Protein* prot, char posit, char negati, int i){
 			cout<<"________________________________________________________";nl
 			nl
 			nl
-/*
 */
 		}
 	}
