@@ -7,6 +7,9 @@ calculadora.o: calculadora.cpp ./CLASSES/classeCalculadora.h
 funcCalculadora.o: ./FUNCTIONS/funcCalculadora.cpp ./CLASSES/classeCalculadora.h
 	g++ -c ./FUNCTIONS/funcCalculadora.cpp -o funcCalculadora.o
 
+make exec:
+	./calculadora
+
 calc: calculadora
 	./calculadora
 

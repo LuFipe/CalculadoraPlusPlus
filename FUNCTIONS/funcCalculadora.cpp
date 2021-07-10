@@ -51,21 +51,24 @@ void ReducaoProtein(Protein* prot, char posit, char negati, int i){
 					};
 					if(prot->get_Type(pre) == FEPARENTESE){
 						prot->set_posicao_I(pre);
+						prot->set_Type(NADA, pre);
 						int count=0;
 						for(int j = (prot->get_posicao_I()-1); j >= 0; j--){
 							if(prot->get_Type(j) == FEPARENTESE) count++;
 
-							if((prot->get_Type(j) == ABPARENTESE)&&(count != 0)) count--;
-
-							if((prot->get_Type(j) == ABPARENTESE)&&(count == 0)) {
-								prot->set_posicao_O(j);
-								prot->set_Type(NADA, j);
-								break;
-							}
+							else if((prot->get_Type(j) == ABPARENTESE)){
+								if(count != 0){
+									count--;
+								}
+								else if(count == 0){
+									prot->set_posicao_O(j);
+									prot->set_Type(NADA, j);
+									break;
+								}
+							} 
 						}
 						prot->setCresc(false);
 						operador_1 = CalcProtein(prot, prot->get_posicao_O(), prot->get_posicao_I());
-						prot->set_Type(NADA, pre);
 						break;
 					}
 				} while (prot->get_Type(pre--) != OPERANDO);
@@ -80,27 +83,31 @@ void ReducaoProtein(Protein* prot, char posit, char negati, int i){
 					};
 					if(prot->get_Type(pos) == ABPARENTESE){
 						prot->set_posicao_O(pos);
+						prot->set_Type(NADA, pos);
 						int count=0;
 						for(int j = (prot->get_posicao_O()+1); j < prot->getFim(); j++){
 							if(prot->get_Type(j) == ABPARENTESE) count++;
 
-							if((prot->get_Type(j) == FEPARENTESE)&&(count != 0)) count--;
-
-							if((prot->get_Type(j) == FEPARENTESE)&&(count == 0)) {
-								prot->set_posicao_I(j);
-								prot->set_Type(NADA, j);
-								break;
-							}
+							else if((prot->get_Type(j) == FEPARENTESE)){
+								if(count != 0){
+									count--;									
+								}
+								else if(count == 0){
+									prot->set_posicao_I(j);
+									prot->set_Type(NADA, j);
+									break;
+								}
+							} 
 						}
 						prot->setCresc(true);
 						operador_2 = CalcProtein(prot, prot->get_posicao_O(), prot->get_posicao_I());
-						prot->set_Type(NADA, pos);
 						break;
 					}					
 				} while (prot->get_Type(pos++) != OPERANDO);
 
 			prot->set_Type(OPERANDO, i);
 /*
+*/
 			//											//
 			//											//
 			//				DEBUG NA RAÇA				//
@@ -114,9 +121,8 @@ void ReducaoProtein(Protein* prot, char posit, char negati, int i){
 			nl
 			cout<<"POSIÇÂO:"<<i<<"\nOperadores procurados: \""<<posit<<"\" \""<<negati<<"\"\nOperando 1 = "<< operador_1 <<"\nOperando_2 = "<<operador_2<<"\n\tOPERADOR: \""<<prot->get_Oper(i)<<"\" "<<"\n\tValor numerico: "<<prot->get_Num(i);nl
 			prot->ShowTab();nl
-*/
 			prot->set_Num(Calc(operador_1,prot->get_Oper(i),operador_2), i);
-/*
+
 			cout<<"POSIÇÂO:"<<i<<"\nOperando 1 = "<< operador_1 <<"\nOperando_2 = "<<operador_2<<"\n\tOPERADOR: \""<<prot->get_Oper(i)<<"\" "<<"\n\tValor numerico: "<<prot->get_Num(i);nl
 			prot->ShowTab();nl
 			nl
@@ -125,6 +131,7 @@ void ReducaoProtein(Protein* prot, char posit, char negati, int i){
 			cout<<"________________________________________________________";nl
 			nl
 			nl
+/*
 */
 		}
 	}
@@ -269,8 +276,9 @@ void Protein::setFim(int fim){
 void Protein::ShowTab(){
 	cout<<"\t|Numero\t\t|OPERADOR\t|Tipo";nl
 	for(int i = 0; i<= this->getFim(); i++){
+		float alguma_coisa;
 		cout<<"________________________________________________________";nl
-		cout<<i<<"\t|"<<(this->get_Num(i)>0.001?this->get_Num(i) : 0.00000)<<"\t\t|"<<this->get_Oper(i)<<"\t\t|";switch (this->get_Type(i))
+		cout<<i<<"\t|"<<(((this->get_Num(i)<0.001)&&(this->get_Num(i)>(-0.001)))? 0.00000 : this->get_Num(i))<<"\t\t|"<<this->get_Oper(i)<<"\t\t|";switch (this->get_Type(i))
 		{
 		case OPERADOR:
 			cout<<"OPERADOR";nl

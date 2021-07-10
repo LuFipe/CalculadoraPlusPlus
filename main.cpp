@@ -164,23 +164,24 @@ void ReducaoProtein(protein* prot, char posit, char negati, int i){
 						break;
 					};
 
-					//CORRIGIR - TOMAR COMO REFERENCIA O CRESCENTE
 					if(prot->tRNA[pre].t == FEPARENTESE){
 						prot->posicao_I = pre;
+						prot->tRNA[pre].t = NADA;
 						int count=0;
 						for(int j = (prot->posicao_I-1); j >= 0; j--){
 							if(prot->tRNA[j].t == FEPARENTESE) count++;
 
-							if((prot->tRNA[j].t == ABPARENTESE)&&(count != 0)) count--;
-
-							if((prot->tRNA[j].t == ABPARENTESE)&&(count == 0)) {
-								prot->posicao_O = j;
-								prot->tRNA[j].t = NADA;
-								break;
-							}
+							else if((prot->tRNA[j].t == ABPARENTESE))
+								if(count != 0){
+									count--;
+								}
+								else if(count == 0){
+									prot->posicao_O = j;
+									prot->tRNA[j].t = NADA;
+									break;
+								}
 						}
 						operador_1 = CalcProteinDecres(prot, prot->posicao_O, prot->posicao_I);
-						prot->tRNA[pre].t = NADA;
 						break;
 					}
 				} while (prot->tRNA[pre--].t != OPERANDO);
@@ -195,20 +196,23 @@ void ReducaoProtein(protein* prot, char posit, char negati, int i){
 					};
 					if(prot->tRNA[pos].t == ABPARENTESE){
 						prot->posicao_O = pos;
+						prot->tRNA[pos].t = NADA;
 						int count=0;
 						for(int j = (prot->posicao_O+1); j < prot->fim; j++){
 							if(prot->tRNA[j].t == ABPARENTESE) count++;
 
-							if((prot->tRNA[j].t == FEPARENTESE)&&(count != 0)) count--;
-
-							if((prot->tRNA[j].t == FEPARENTESE)&&(count == 0)) {
-								prot->posicao_I = j;
-								prot->tRNA[j].t = NADA;
-								break;
+							else if((prot->tRNA[j].t == FEPARENTESE)){
+								if(count != 0){
+									count--;
+								}
+								else if(count == 0){
+									prot->posicao_I = j;
+									prot->tRNA[j].t = NADA;
+									break;
+								}
 							}
 						}
 						operador_2 = CalcProteinCresc(prot, prot->posicao_O, prot->posicao_I);
-						prot->tRNA[pos].t = NADA;
 						break;
 					}					
 				} while (prot->tRNA[pos++].t != OPERANDO);
