@@ -5,7 +5,7 @@
 			/*													*/
 double Calc(double, char, double);
 void ReducaoProtein(Protein*, char, char, int );
-void Varredura(Protein*, int, int, bool);
+void Varredura(Protein*, int, int);
 double CalcProtein(Protein*, int, int);
 void R_RNA(string, Protein*);
 
@@ -100,24 +100,50 @@ void ReducaoProtein(Protein* prot, char posit, char negati, int i){
 				} while (prot->get_Type(pos++) != OPERANDO);
 
 			prot->set_Type(OPERANDO, i);
+/*
+			//											//
+			//											//
+			//				DEBUG NA RAÇA				//
+			//		descomente para fazer o debug		//
+			//											//
+			nl
+			cout<<"________________________________________________________";nl
+			cout<<"----#-----#-----#-----#-----#-----#-----#-----#-----#---";nl
+			cout<<"________________________________________________________";nl
+			nl
+			nl
+			cout<<"POSIÇÂO:"<<i<<"\nOperadores procurados: \""<<posit<<"\" \""<<negati<<"\"\nOperando 1 = "<< operador_1 <<"\nOperando_2 = "<<operador_2<<"\n\tOPERADOR: \""<<prot->get_Oper(i)<<"\" "<<"\n\tValor numerico: "<<prot->get_Num(i);nl
+			prot->ShowTab();nl
+*/
 			prot->set_Num(Calc(operador_1,prot->get_Oper(i),operador_2), i);
+/*
+			cout<<"POSIÇÂO:"<<i<<"\nOperando 1 = "<< operador_1 <<"\nOperando_2 = "<<operador_2<<"\n\tOPERADOR: \""<<prot->get_Oper(i)<<"\" "<<"\n\tValor numerico: "<<prot->get_Num(i);nl
+			prot->ShowTab();nl
+			nl
+			cout<<"________________________________________________________";nl
+			cout<<"----#-----#-----#-----#-----#-----#-----#-----#-----#---";nl
+			cout<<"________________________________________________________";nl
+			nl
+			nl
+*/
 		}
 	}
 
 }
 
 //Varre toda a proteina de forma crescente e decrescente
-void Varredura(Protein* prot, int inicio, int final, bool crescente){
+void Varredura(Protein* prot, int inicio, int final){
 	char oper[3][2] = {{'^','l'},{'*','/'},{'+','-'}};
-	if(crescente == true){
+
+	if(prot->getCresc() == true){
 		for(int loop = 0; loop < 3; loop++){
 			for(int i = (inicio); i<final; i++){
 				ReducaoProtein(prot, oper[loop][0], oper[loop][1], i);
 			}
 		}
-	}else if(crescente == false){
-		for(int loop = (final -1) ; loop>=inicio; loop--){
-			for(int i = (inicio); i<final; i++){
+	}else if(prot->getCresc() == false){
+		for(int loop = 0 ; loop<3; loop++){
+			for(int i = (final -1); i>=inicio; i--){
 				ReducaoProtein(prot, oper[loop][0], oper[loop][1], i);
 			}
 		}
@@ -127,7 +153,7 @@ void Varredura(Protein* prot, int inicio, int final, bool crescente){
 //Calcula toda a Proteina de modo Crescente
 double CalcProtein(Protein* proteina, int inicio, int final){
 	double res;
-	Varredura(proteina, inicio, final, proteina->getCresc());
+	Varredura(proteina, inicio, final);
 
 	for(int i=inicio; i<final; i++){
 		if(proteina->get_Type(i) == OPERANDO){
@@ -242,7 +268,7 @@ void Protein::setFim(int fim){
 
 void Protein::ShowTab(){
 	cout<<"\t|Numero\t\t|OPERADOR\t|Tipo";nl
-	for(int i = 0; i< this->getFim(); i++){
+	for(int i = 0; i<= this->getFim(); i++){
 		cout<<"________________________________________________________";nl
 		cout<<i<<"\t|"<<(this->get_Num(i)>0.001?this->get_Num(i) : 0.00000)<<"\t\t|"<<this->get_Oper(i)<<"\t\t|";switch (this->get_Type(i))
 		{
@@ -302,9 +328,9 @@ Protein::Protein(string mRNA){
 
 	R_RNA(this->get_M_RNA(), this);
 	
-	setFim(this->get_DIM());
 	set_posicao_O(0);
 	set_posicao_I(getFim());
 	setCresc(true);
 
+	set_Resultado();
 }
