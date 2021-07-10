@@ -172,9 +172,13 @@ void Protein::R_RNA(string m_RNA){
 			while(m_RNA[posi] == ' '){						//Retira todos os espaços em branco do M_RNA
 				posi++;
 			}
-
+											// Verifica e traduz Menos Unario	//
+			if(m_RNA[posi] == '~'){
+				this->set_Type(MENOS_UNARIO, j);
+				this->set_Oper(m_RNA[posi++], j);
+			}
 											//	Verifica e traduz Parenteses	//
-			if((m_RNA[posi] == '(') || (m_RNA[posi] == ')')){
+			else if((m_RNA[posi] == '(') || (m_RNA[posi] == ')')){
 				this->set_Type(((m_RNA[posi] == '(') ? ABPARENTESE:FEPARENTESE), j);
 				this->set_Oper(m_RNA[posi++], j);
 			}
@@ -237,8 +241,8 @@ void Protein::set_Num(double num, int posicao){
 	this->tRNA[posicao].val.num = num;
 };
 
-void Protein::set_Type(tipo t, int posicao){
-	this->tRNA[posicao].t = t;
+void Protein::set_Type(tipo classificacao, int posicao){
+	this->tRNA[posicao].classificacao = classificacao;
 };
 
 void Protein::set_posicao_O(int posicao_O){
@@ -258,12 +262,23 @@ void Protein::setFim(int fim){
 }
 
 void Protein::ShowTab(){
+/*
+	nl
+	cout<<"________________________________________________________";nl
+	cout<<"----#-----#-----#-----#-----#-----#-----#-----#-----#---";nl
+	cout<<"________________________________________________________";nl
+	nl
+*/
 	cout<<"\t|Numero\t\t|OPERADOR\t|Tipo";nl
 	for(int i = 0; i<= this->getFim(); i++){
 		float alguma_coisa;
+		
 		cout<<"________________________________________________________";nl
 		cout<<i<<"\t|"<<(((this->get_Num(i)<0.001)&&(this->get_Num(i)>(-0.001)))? 0.00000 : this->get_Num(i))<<"\t\t|"<<this->get_Oper(i)<<"\t\t|";switch (this->get_Type(i))
 		{
+		case MENOS_UNARIO:
+			cout<<"MENOS UNARIO";nl
+			break;
 		case OPERADOR:
 			cout<<"OPERADOR";nl
 			break;
@@ -286,18 +301,25 @@ void Protein::ShowTab(){
 			cout<<"Não ha tipo reconhecido";nl
 			break;
 		}
+		
 	}
+	nl
+	cout<<"________________________________________________________";nl
+	cout<<"----#-----#-----#-----#-----#-----#-----#-----#-----#---";nl
+	cout<<"________________________________________________________";nl
+	nl
+	nl
 }
 
 void Protein::ShowProtein(){
 	double a;
 	char b;
 	for(int i=0; i<this->fim; i++){
-		if((this->tRNA[i].t == OPERADOR)||(this->tRNA[i].t == ABPARENTESE)||(this->tRNA[i].t == FEPARENTESE)) {
+		if((this->get_Type(i) == OPERADOR)||(this->get_Type(i) == ABPARENTESE)||(this->get_Type(i) == FEPARENTESE)) {
 			b = this->tRNA[i].val.oper;
 			cout<<b;
 		}
-		else if(this->tRNA[i].t == OPERANDO) {
+		else if(this->get_Type(i) == OPERANDO) {
 			a = this->tRNA[i].val.num;
 			cout<<a;
 		}
@@ -323,6 +345,8 @@ Protein::Protein(string mRNA){
 	set_posicao_O(0);
 	set_posicao_I(getFim());
 	setCresc(true);
+
+	ShowTab();
 
 	set_Resultado();
 }

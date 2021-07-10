@@ -11,9 +11,10 @@ using namespace std;
 /*													*/
 /*					TIPOS E ESTRUTURAS				*/
 /*													*/
-enum tipo {OPERANDO, OPERADOR, TRIGONOMETRICO, ABPARENTESE, FEPARENTESE, NADA};
-union atom {double num; char oper;};
-struct mol {atom val;tipo t;};
+enum funcaoTriginometrica {SIN, COS, TAN, ASIN, ACOS, ATAN, SINH, COSH, TANH, ASINH, ACOSH, ATANH};
+enum tipo {MENOS_UNARIO, TRIGONOMETRICO, OPERANDO, OPERADOR, ABPARENTESE, FEPARENTESE, NADA};
+union atom {double num; char oper; funcaoTriginometrica funcTrig;};
+struct mol {atom val;tipo classificacao;};
 class Protein{
 	
 	private:
@@ -41,9 +42,9 @@ class Protein{
 	//tRNA[i].val.num
 		void set_Num(double, int);
 		double get_Num(int i){return tRNA[i].val.num;};
-	//tRNA[i].t
+	//tRNA[i].classificacao
 		void set_Type(tipo, int);
-		tipo get_Type(int i){return tRNA[i].t;};
+		tipo get_Type(int i){return tRNA[i].classificacao;};
 	//posicao_O
 		void set_posicao_O(int);
 		int get_posicao_O(){return posicao_O;};
